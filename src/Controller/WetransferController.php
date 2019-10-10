@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Psr\Log\LoggerInterface;
 
 class WetransferController extends AbstractController
 {
@@ -21,20 +22,38 @@ class WetransferController extends AbstractController
     public function new(Request $request)
     {
         dump($request);
-        $task = new Transfer();
+        $transfer = new Transfer();
         // ...
 
-        $form = $this->createForm(TransferFormType::class, $task);
+        $form = $this->createForm(TransferFormType::class, $transfer);
 
         return $this->render('wetransfer/index.html.twig', [
             'form' => $form->createView(),
             'controller_name' => 'WetransferController',
         ]);
         if ($form->isSubmitted() && $form->isValid()) {
-       $someNewFilename =
-
+       // $someNewFilename = ;
        $file = $form['attachment']->getData();
        $file->move($directory, $someNewFilename);
+       sendMail($form['authorEmail'],$form["receiverMail"],$form["message"]);
      }
+    }
+
+    public function zipData(UploadedFile $data) {
+
+    }
+
+    public function sendMail($sender, $receiver, $personnalMessage) {
+      $mailer = new Swift_Mailer();
+
+      $mailSubject = "Files from ".$sender." are waiting for you!";
+      $message = (new Swift_Message($mailSubject))
+      ->setFrom(['send@example.com'])
+      ->setTo([$receiver])
+      ->setBody("this is a test")
+      ;
+
+      $mailer->send($message);
+
     }
 }
