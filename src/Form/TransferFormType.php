@@ -18,7 +18,7 @@ class TransferFormType extends AbstractType
             ->add('receiverMail')
             ->add('message')
             // ->add('dataLink')
-            ->add('file', FileType::class)
+            ->add('file', FileType::class, ['label' =>'fileName'])
             ->add('send', SubmitType::class, [
     'label' => 'form.order.submit_to_company',
     'label_translation_parameters' => [

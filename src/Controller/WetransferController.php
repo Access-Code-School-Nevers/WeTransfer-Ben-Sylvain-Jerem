@@ -25,16 +25,20 @@ class WetransferController extends AbstractController
         // ...
 
         $form = $this->createForm(TransferFormType::class, $task);
+        $form->handleRequest($request);
+
 
         return $this->render('wetransfer/index.html.twig', [
             'form' => $form->createView(),
             'controller_name' => 'WetransferController',
         ]);
         if ($form->isSubmitted() && $form->isValid()) {
-       $someNewFilename =
 
-       $file = $form['attachment']->getData();
-       $file->move($directory, $someNewFilename);
-     }
+
+          $file = $form['file']->getFile();
+
+          $fileName = $file->getClientOriginalName();
+         }
+
     }
 }
