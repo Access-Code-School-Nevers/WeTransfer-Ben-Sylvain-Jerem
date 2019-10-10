@@ -22,23 +22,25 @@ class WetransferController extends AbstractController
     {
         dump($request);
         $task = new Transfer();
-        // ...
+        $zipFile = new \PhpZip\ZipFile();
 
         $form = $this->createForm(TransferFormType::class, $task);
         $form->handleRequest($request);
 
 
-        return $this->render('wetransfer/index.html.twig', [
-            'form' => $form->createView(),
-            'controller_name' => 'WetransferController',
         ]);
         if ($form->isSubmitted() && $form->isValid()) {
 
-
-          $file = $form['file']->getFile();
-
-          $fileName = $file->getClientOriginalName();
+          $fileForm = $form['file'];
+          $contents = $zipFile[$fileForm];
+          $contents->move($this->getParameter('upload_file'));
+          $linkFile = $this->generateUrl('wedownload');
+          $task->setDataLink($linkFile);
          }
 
+
+        return $this->render('wetransfer/index.html.twig', [
+          'form' => $form->createView(),
+          'controller_name' => 'WetransferController']);
     }
 }

@@ -20,12 +20,11 @@ class TransferFormType extends AbstractType
             // ->add('dataLink')
             ->add('file', FileType::class, ['label' =>'fileName'])
             ->add('send', SubmitType::class, [
-    'label' => 'form.order.submit_to_company',
+    'label' => 'Submit',
     'label_translation_parameters' => [
         '%company%' => 'ACME Inc.',
     ],
     ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
