@@ -5,7 +5,11 @@
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
 {% block body %}
-<div class='col-4'>
+<div id="wrapper">
+  <div id="clouds"></div>
+
+<div class='col-4 formulaire'>
 {{ form(form) }}
+</div>
 </div>
 {% endblock %}

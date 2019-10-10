@@ -44,8 +44,47 @@ body{
 }
 .btn:hover {
   background-color: #839496;
-  color: white;;
+  color: #dff5ff;
 }
 span {
   font-size: 2.5em;
+}
+
+.formulaire {
+  z-index: 5;
+}
+
+.formulaire {
+  position: absolute;
+  margin-left: 33%;
+  margin-top: 12%;
+  background-color: white;
+  border-radius: 3%;
+}
+
+.form-control {
+  background-color: white;
+  border-width: 5px solid;
+  border-color: grey;
+}
+.custom-file-label{
+  background-color: white;
+  border-width: 5px solid;
+  border-color: grey;
+}
+.custom-file-label::after {
+  background: #a9bdbd;
+  color: white;
+}
+
+.btn-primary {
+  background: #a9bdbd;
+  width: 100%;
+  color: white;
+}
+.btn-primary:hover {
+  background: white;
+  letter-spacing: 0.4rem;
+  font-size: 1.5rem;
+  color: #a9bdbd;
 }
