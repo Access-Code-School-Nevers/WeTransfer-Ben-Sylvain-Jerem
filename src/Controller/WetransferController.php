@@ -37,4 +37,12 @@ class WetransferController extends AbstractController
        $file->move($directory, $someNewFilename);
      }
     }
+    /**
+     * @Route("/wedownload", name="wedownload")
+     */
+     public function download()
+     {
+       return $this->render('wetransfer/receiver.html.twig',
+              ['controller_name' => 'WetransferController']);
+     }
 }
