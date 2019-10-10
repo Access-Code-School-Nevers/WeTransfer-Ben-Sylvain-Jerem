@@ -2,8 +2,10 @@
 
 {% block title %}{{controller_name}}{% endblock %}
 
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
 {% block body %}
-
+<div class='col-4'>
 {{ form(form) }}
-
+</div>
 {% endblock %}

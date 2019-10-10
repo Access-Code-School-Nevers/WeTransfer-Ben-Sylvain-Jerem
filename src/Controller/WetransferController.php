@@ -20,7 +20,7 @@ class WetransferController extends AbstractController
 
     public function new(Request $request)
     {
-
+        dump($request);
         $task = new Transfer();
         // ...
 
@@ -31,7 +31,7 @@ class WetransferController extends AbstractController
             'controller_name' => 'WetransferController',
         ]);
         if ($form->isSubmitted() && $form->isValid()) {
-       $someNewFilename = 
+       $someNewFilename =
 
        $file = $form['attachment']->getData();
        $file->move($directory, $someNewFilename);
