@@ -25,7 +25,6 @@ class TransferFormType extends AbstractType
         '%company%' => 'ACME Inc.',
     ],
     ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
