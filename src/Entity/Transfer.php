@@ -36,18 +36,6 @@ class Transfer
      */
     private $dataLink;
 
-    private $file;
-
-    public function getFile()
-    {
-      return $this->file;
-    }
-
-    public function setFile(UploadedFile $file = null)
-    {
-      $this->file = $file;
-    }
-
     public function getId(): ?int
     {
         return $this->id;

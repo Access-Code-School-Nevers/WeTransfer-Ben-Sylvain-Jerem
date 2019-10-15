@@ -8,23 +8,25 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TransferFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('authorMail')
-            ->add('receiverMail')
-            ->add('message')
-            // ->add('dataLink')
-            ->add('file', FileType::class, ['label' =>'fileName'])
+            ->add('authorMail', TextType::class)
+            ->add('receiverMail', TextType::class)
+            ->add('message', TextareaType::class)
+
+            ->add('file', FileType::class, ['label' => 'file_dl',
+              'mapped' => false,
+              'required' => false,
+            ])
             ->add('send', SubmitType::class, [
-    'label' => 'Submit',
-    'label_translation_parameters' => [
-        '%company%' => 'ACME Inc.',
-    ],
-    ]);
+              'label' => 'Submit',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
