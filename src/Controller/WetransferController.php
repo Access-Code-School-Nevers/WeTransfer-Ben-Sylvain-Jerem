@@ -19,6 +19,7 @@ use App\Entity\Transfer;
 use App\Form\TransferFormType;
 use App\Service\FileUploader;
 use App\Repository\TransferRepository;
+use ZipArchive;
 
 class WetransferController extends AbstractController
 {
@@ -28,36 +29,37 @@ class WetransferController extends AbstractController
 
     public function wetransfer(Request $request, ObjectManager $manager)
     {
-        dump($request);
 
         // $zipFile = new ZipFile();
         $task = new Transfer();
 
-        $zip = new \PhpZip\ZipFile();
+        $zip= new ZipArchive();
 
         $form = $this->createForm(TransferFormType::class, $task);
 
         $form->handleRequest($request);
 
-        dump($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
           // capture du fichier envoyer dans une variable
-          /** @var UploadedFile $fileForm */
-          $fileForm = $form['file']->getdata();
+          /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+          $file = $task->getFile();
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'.'.$file->guessExtension();
 
+          try {
+                $file->move(
+                    $this->getParameter('upload_file'),
+                    $fileName
+                );
+            } catch (FileException $e) {
 
-          $fileName = pathinfo($fileForm->getClientOriginalName(), PATHINFO_FILENAME);
+            }
 
-          $zip->openFile('file.zip');
-          $zip->addFile($fileForm, $fileName, ZipFile::METHOD_DEFLATED);
+            $task->setFile($fileName);
 
-          // $zip->addFromString("zip/entry/filename", "Is file content")
-          //     ->addDir('uploads', '%kernel.project_dir%/public/')
-          //     ->saveAsFile($fileForm)
-          //     ->close();
-
-              // ->move($this->getParameter('upload_file'))
+            $zip->open('uploads/'.md5(uniqid()).'.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $zip->addFile('uploads/'.$fileName, $fileName);
+            $zip->close();
 
           $task = $form->getdata();
 
@@ -69,6 +71,7 @@ class WetransferController extends AbstractController
           $manager->persist($task);
           $manager->flush();
 
+          unlink('uploads/'.$fileName);
           // sendMail($form['authorEmail'],$form["receiverMail"],$form["message"],$linkFile);
          }
 

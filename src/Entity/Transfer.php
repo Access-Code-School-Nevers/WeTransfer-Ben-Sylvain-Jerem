@@ -36,6 +36,11 @@ class Transfer
      */
     private $dataLink;
 
+    /**
+    * @ORM\Column(type="string")
+    */
+    private $file;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +50,7 @@ class Transfer
     {
         return $this->authorMail;
     }
+
 
     public function setAuthorMail(string $authorMail): self
     {
@@ -87,5 +93,17 @@ class Transfer
         $this->dataLink = $dataLink;
 
         return $this;
+    }
+
+    public function getFile()
+    {
+      return $this->file;
+    }
+
+    public function setFile($file)
+    {
+      $this->file = $file;
+
+      return $this;
     }
 }
