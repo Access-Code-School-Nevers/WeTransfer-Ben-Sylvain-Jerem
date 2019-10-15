@@ -43,14 +43,19 @@ class WetransferController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
           // capture du fichier envoyer dans une variable
-
-
           /** @var UploadedFile $fileForm */
           $fileForm = $form['file']->getdata();
+
+
           $fileName = pathinfo($fileForm->getClientOriginalName(), PATHINFO_FILENAME);
 
-          $zip->addFile($fileForm)
-              ->close();
+          $zip->openFile('file.zip');
+          $zip->addFile($fileForm, $fileName, ZipFile::METHOD_DEFLATED);
+
+          // $zip->addFromString("zip/entry/filename", "Is file content")
+          //     ->addDir('uploads', '%kernel.project_dir%/public/')
+          //     ->saveAsFile($fileForm)
+          //     ->close();
 
               // ->move($this->getParameter('upload_file'))
 
