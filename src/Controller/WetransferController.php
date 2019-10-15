@@ -15,11 +15,12 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Doctrine\Common\Persistence\ObjectManager;
 use PhpZip\Model\ZipEntry;
 use PhpZip\ZipFile;
+use ZipArchive;
 use App\Entity\Transfer;
 use App\Form\TransferFormType;
 use App\Service\FileUploader;
 use App\Repository\TransferRepository;
-use ZipArchive;
+use Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle;
 
 class WetransferController extends AbstractController
 {
@@ -27,9 +28,8 @@ class WetransferController extends AbstractController
      * @Route("/", name="wetransfer")
      */
 
-    public function wetransfer(Request $request, ObjectManager $manager)
+    public function wetransfer(Request $request, ObjectManager $manager, \Swift_Mailer $mailer)
     {
-
         // $zipFile = new ZipFile();
         $task = new Transfer();
 
@@ -38,7 +38,6 @@ class WetransferController extends AbstractController
         $form = $this->createForm(TransferFormType::class, $task);
 
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
           // capture du fichier envoyer dans une variable
@@ -54,15 +53,13 @@ class WetransferController extends AbstractController
             } catch (FileException $e) {
 
             }
-
             $task->setFile($fileName);
-
-            $zip->open('uploads/'.md5(uniqid()).'.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $zipName=md5(uniqid());
+            $zip->open('uploads/'.$zipName.'.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
             $zip->addFile('uploads/'.$fileName, $fileName);
             $zip->close();
 
           $task = $form->getdata();
-
 
           $linkFile = $this->generateUrl('wedownload');
 
@@ -72,7 +69,10 @@ class WetransferController extends AbstractController
           $manager->flush();
 
           unlink('uploads/'.$fileName);
-          // sendMail($form['authorEmail'],$form["receiverMail"],$form["message"],$linkFile);
+          $log=fopen('test.txt',"w");
+          fwrite($log, $task->getAuthorMail());
+          fwrite($log, $zipName);
+          $this->sendMail($task, $zipName, $mailer);
          }
 
 
@@ -82,13 +82,25 @@ class WetransferController extends AbstractController
           // 'nameFile' => pathinfo($fileForm->getClientOriginalName(), PATHINFO_FILENAME)
         ]);
     }
-    /**
-    * @Route("/wedownload", name="wedownload")
-    */
 
-    public function download()
-    {
+
+    /**
+    * @Route("/wedownload{$data_id}", name="wedownload")
+    */
+    public function download() {
           return $this->render('wetransfer/receiver.html.twig',
                  ['controller_name' => 'WetransferController']);
+    }
+
+    public function sendMail($task, $data_id, $mailer) {
+      $message = (new \Swift_Message('Contact via site Internet'))
+
+      ->setFrom($task->getAuthorMail())
+      ->setTo($task->getReceiverMail())
+      ->setBody(
+          $task->getDataLink()
+          )
+      ;
+      $mailer->send($message);
     }
 }
